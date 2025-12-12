@@ -71,7 +71,7 @@ export function PrisometroSlide({ lang = 'pt' }: Props) {
     if (error) return <div className="text-red-500 text-center">{t("Erro ao carregar dados do Prisômetro.", "Error loading Prisometer data.")}</div>;
 
     return (
-        <div className="w-full h-full relative overflow-hidden flex flex-col items-center bg-slate-950 font-sans text-slate-200 p-2 md:p-6 select-none">
+        <div className="w-full h-full relative overflow-hidden flex flex-col items-center bg-slate-950 font-sans text-slate-200 select-none">
             {/* Background Sci-Fi Grid */}
             <div className="absolute inset-0 z-0 opacity-20 pointer-events-none fixed-bg-pattern"
                 style={{
@@ -82,10 +82,12 @@ export function PrisometroSlide({ lang = 'pt' }: Props) {
             {/* Ambient Glow */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 bg-cyan-500/10 blur-[100px] pointer-events-none"></div>
 
-            <div className="relative z-10 w-full max-w-7xl text-center flex flex-col items-center flex-1 justify-between h-full py-2">
+            {/* Main Content Group - Centered Vertically */}
+            <div className="relative z-10 w-full max-w-7xl h-full flex flex-col items-center justify-center pb-16 md:pb-24 px-4 gap-4 md:gap-8">
 
-                <div className="flex flex-col items-center w-full">
-                    <h2 className="text-[10vw] md:text-6xl font-black text-white mb-2 uppercase tracking-tighter drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]">
+                <div className="flex flex-col items-center w-full shrink-0">
+                    <h2 className="font-black text-white mb-1 uppercase tracking-tighter drop-shadow-[0_0_15px_rgba(34,211,238,0.5)] leading-none"
+                        style={{ fontSize: 'clamp(2.5rem, 6vh, 5rem)' }}>
                         {lang === 'pt' ? (
                             <>Prisô<span className="text-cyan-500">metro</span></>
                         ) : (
@@ -93,12 +95,17 @@ export function PrisometroSlide({ lang = 'pt' }: Props) {
                         )}
                     </h2>
 
-                    <p className="text-xs md:text-2xl text-slate-400 font-light max-w-4xl border-b border-slate-800 pb-2 md:pb-6 mb-2 md:mb-4 px-4 leading-tight">
+                    <p className="text-slate-400 font-light max-w-4xl border-b border-slate-800 pb-2 md:pb-4 mb-2 px-4 leading-tight"
+                        style={{ fontSize: 'clamp(0.8rem, 1.8vh, 1.25rem)' }}>
                         {t("As câmeras do Smart Sampa ajudaram na captura de", "Smart Sampa cameras helped capture")}
                     </p>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-x-2 md:gap-x-12 gap-y-4 md:gap-y-12 w-full flex-1 content-center">
+                <div className="grid grid-cols-2 md:grid-cols-3 w-full content-center items-center justify-center max-w-5xl"
+                    style={{
+                        columnGap: 'clamp(1rem, 4vw, 3rem)',
+                        rowGap: 'clamp(1rem, 3vh, 3rem)'
+                    }}>
                     <StatItem
                         value={data?.foragidos}
                         label={lang === 'pt' ? <span>FORAGIDOS<br />CAPTURADOS</span> : <span>FUGITIVES<br />CAPTURED</span>}
@@ -136,23 +143,27 @@ export function PrisometroSlide({ lang = 'pt' }: Props) {
                         delay={500}
                     />
                 </div>
-
-                <div className="mt-2 flex items-center gap-2 text-[10px] md:text-xs font-mono text-cyan-500/70 border border-cyan-900/50 bg-cyan-950/20 px-4 py-2 rounded-full">
+                {/* Footer - Pinned to Bottom */}
+                <div className="flex items-center gap-2 font-mono text-cyan-500/70 border border-cyan-900/50 bg-cyan-950/80 backdrop-blur-sm px-4 py-2 rounded-full"
+                    style={{ fontSize: 'clamp(0.65rem, 1.5vh, 0.85rem)' }}>
                     <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-cyan-500 animate-pulse"></span>
                     {t("ÚLTIMA ATUALIZAÇÃO:", "LAST UPDATE:")} <span className="text-cyan-300">{loading ? '...' : data?.lastUpdate}</span>
                 </div>
-
             </div>
+
+
+
+
         </div>
     );
 }
 
 function StatItem({ value, label, loading, delay }: { value?: string, label: React.ReactNode, loading: boolean, delay: number }) {
     return (
-        <div className="flex flex-col items-center group justify-center h-full">
-            <div className={`text-[2rem] md:text-7xl font-bold font-mono text-cyan-400 mb-0 md:mb-3 transition-all duration-700 transform drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]
+        <div className="flex flex-col items-center group justify-center h-full max-h-full overflow-hidden">
+            <div className={`font-bold font-mono text-cyan-400 mb-0 md:mb-1 transition-all duration-700 transform drop-shadow-[0_0_10px_rgba(6,182,212,0.5)] leading-none
                  ${loading ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}
-            `} style={{ transitionDelay: `${delay}ms` }}>
+            `} style={{ transitionDelay: `${delay}ms`, fontSize: 'clamp(2rem, 8vh, 5rem)' }}>
                 {loading ? (
                     <div className="h-8 w-16 md:h-16 md:w-32 bg-slate-800 animate-pulse rounded-lg border border-slate-700"></div>
                 ) : (
@@ -160,9 +171,9 @@ function StatItem({ value, label, loading, delay }: { value?: string, label: Rea
                 )}
             </div>
 
-            <div className={`text-[0.5rem] md:text-sm font-bold text-slate-500 group-hover:text-slate-300 text-center uppercase leading-tight tracking-wider transition-all duration-700 delay-300
+            <div className={`font-bold text-slate-500 group-hover:text-slate-300 text-center uppercase leading-tight tracking-wider transition-all duration-700 delay-300
                 ${loading ? 'opacity-0' : 'opacity-100'}
-            `}>
+            `} style={{ fontSize: 'clamp(0.6rem, 1.5vh, 0.9rem)' }}>
                 {label}
             </div>
         </div>
