@@ -8,9 +8,9 @@ export function ThankYouSlide({ lang = 'pt' }: Props) {
     const t = (pt: string, en: string) => lang === 'pt' ? pt : en;
 
     return (
-        <div className="w-full h-full relative overflow-hidden flex flex-col items-center justify-center bg-slate-950 font-sans select-none">
+        <div className="w-full h-full relative overflow-y-auto custom-scrollbar flex flex-col items-center justify-center bg-slate-950 font-sans select-none">
             {/* Background Effects */}
-            <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 z-0 fixed">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"></div>
                 {/* Animated Matrix-like Grid */}
                 <div className="absolute inset-0 opacity-10"

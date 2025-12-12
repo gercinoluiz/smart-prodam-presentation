@@ -10,10 +10,10 @@ export function IntroSlide({ lang = 'pt' }: Props) {
     const t = (pt: string, en: string) => lang === 'pt' ? pt : en;
 
     return (
-        <div className="w-full h-full relative overflow-hidden flex items-center justify-center bg-slate-950 font-sans select-none">
+        <div className="w-full h-full relative overflow-hidden flex items-center justify-center bg-slate-950 font-sans select-none p-4 md:p-2 md:pb-20">
 
             {/* Background with Overlay */}
-            <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 z-0 pointer-events-none">
                 <img
                     src={camerasImg}
                     alt="Smart City Background"
@@ -29,22 +29,28 @@ export function IntroSlide({ lang = 'pt' }: Props) {
                 </div>
             </div>
 
-            {/* Main Content */}
-            <div className="relative z-10 max-w-5xl w-full py-2 flex flex-col md:flex-row items-center gap-12">
+            {/* Main Content - Centered Block Layout */}
+            <div className="relative z-10 w-full max-w-7xl flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 px-2 md:px-6 max-h-full">
 
-                {/* Text Section */}
-                <div className="flex-1 space-y-8">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-xs font-mono mb-4 animate-fade-in-up">
-                        <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                {/* Text Section - Compact & Responsive */}
+                <div className="w-full md:w-3/5 flex flex-col justify-center gap-3 md:gap-5 min-w-0">
+
+                    {/* Badge */}
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-[10px] md:text-xs font-mono animate-fade-in-up w-fit">
+                        <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-cyan-400 animate-pulse"></span>
                         {t('MONITORAMENTO INTELIGENTE', 'INTELLIGENT MONITORING')}
                     </div>
 
-                    <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight leading-tight animate-fade-in-up delay-100">
+                    {/* Title */}
+                    <h1 className="font-black text-white tracking-tight leading-tight animate-fade-in-up delay-100 drop-shadow-lg"
+                        style={{ fontSize: 'clamp(1.75rem, 5vh, 4rem)' }}>
                         SMART SAMPA <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">PRODAM</span>
                     </h1>
 
-                    <p className="text-lg md:text-xl text-slate-300 leading-relaxed max-w-2xl border-l-4 border-cyan-500 pl-6 animate-fade-in-up delay-200">
+                    {/* Description */}
+                    <div className="text-slate-300 leading-relaxed max-w-2xl border-l-4 border-cyan-500 pl-4 md:pl-6 animate-fade-in-up delay-200 line-clamp-4 md:line-clamp-none overflow-hidden"
+                        style={{ fontSize: 'clamp(0.875rem, 2vh, 1.15rem)' }}>
                         {lang === 'pt' ? (
                             <>
                                 A maior plataforma de <strong>inteligência urbana</strong> e <strong>segurança pública</strong> da América Latina agora é PRODAM. <br />
@@ -56,34 +62,35 @@ export function IntroSlide({ lang = 'pt' }: Props) {
                                 Integrating thousands of cameras, sensors, and data to protect your city in real time.
                             </>
                         )}
-                    </p>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 animate-fade-in-up delay-300">
-                        <FeatureItem icon="videocam" title="20k+ Câmeras" desc={t("Reconhecimento Facial & LPR", "Facial Recognition & LPR")} key="1" />
-                        <FeatureItem icon="hub" title={t("Integração", "Integration")} desc={t("PM, GCM, SAMU e Defesa Civil", "Police, GCM, EMS and Civil Defense")} key="2" />
-                        <FeatureItem icon="neurology" title={t("IA Avançada", "Advanced AI")} desc={t("Detecção autônoma de incidentes", "Autonomous incident detection")} key="3" />
                     </div>
 
+                    {/* Features Grid */}
+                    <div className="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 animate-fade-in-up delay-300 pt-1">
+                        <FeatureItem icon="videocam" title="20k+ Câmeras" desc={t("Rec. Facial & LPR", "Facial Rec & LPR")} delay="0ms" />
+                        <FeatureItem icon="hub" title={t("Integração", "Integration")} desc={t("PM, GCM, SAMU", "Police, GCM, EMS")} delay="100ms" />
+                        <FeatureItem icon="neurology" title={t("IA Avançada", "Advanced AI")} desc={t("Detecção de Incidentes", "Incident Detection")} delay="200ms" />
+                        <FeatureItem icon="lock" title={t("Segurança", "Security")} desc="LGPD / Compliance" delay="300ms" />
+                    </div>
                 </div>
 
-                {/* Visual Element / Graphic */}
-                <div className="w-full md:w-1/3 flex justify-center animate-fade-in-right delay-300">
-                    <div className="relative w-80 h-80">
+                {/* Visual Element - Scaled Graphically */}
+                <div className="w-full md:w-2/5 flex justify-center items-center animate-fade-in-right delay-300 shrink-0">
+                    <div className="relative aspect-square w-auto h-[25vh] md:h-[40vh] max-h-[400px]">
                         {/* Rotating Rings */}
                         <div className="absolute inset-0 border-4 border-cyan-500/20 rounded-full animate-spin-slow-reverse"></div>
                         <div className="absolute inset-4 border-2 border-cyan-400/30 rounded-full animate-spin-slow border-dashed"></div>
                         <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-48 h-48 bg-cyan-500/10 rounded-full backdrop-blur-md border border-cyan-400/50 flex items-center justify-center shadow-[0_0_50px_rgba(6,182,212,0.3)]">
-                                <span className="material-symbols-outlined text-8xl text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">
+                            <div className="w-[60%] h-[60%] bg-cyan-500/10 rounded-full backdrop-blur-md border border-cyan-400/50 flex items-center justify-center shadow-[0_0_50px_rgba(6,182,212,0.3)]">
+                                <span className="material-symbols-outlined text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]" style={{ fontSize: 'clamp(2rem, 8vh, 5rem)' }}>
                                     shield_with_house
                                 </span>
                             </div>
                         </div>
 
                         {/* Floating Badges */}
-                        <FloatingBadge icon="visibility" text={t("Vigilância", "Surveillance")} position="-top-4 left-10" delay="0s" />
-                        <FloatingBadge icon="memory" text="Analytics" position="bottom-12 -right-8" delay="1s" />
-                        <FloatingBadge icon="speed" text="Real-Time" position="top-1/2 -left-12" delay="2s" />
+                        <FloatingBadge icon="visibility" text={t("Vigilância", "Surveillance")} position="-top-4 left-0" delay="0s" />
+                        <FloatingBadge icon="memory" text="Analytics" position="bottom-4 -right-4" delay="1s" />
+                        <FloatingBadge icon="speed" text="Real-Time" position="top-1/2 -left-8" delay="2s" />
                     </div>
                 </div>
 
@@ -92,21 +99,24 @@ export function IntroSlide({ lang = 'pt' }: Props) {
     );
 }
 
-function FeatureItem({ icon, title, desc }: { icon: string, title: string, desc: string }) {
+function FeatureItem({ icon, title, desc, delay }: { icon: string, title: string, desc: string, delay: string }) {
     return (
-        <div className="flex flex-col gap-1 p-3 rounded-lg bg-slate-900/40 border border-slate-800/50 hover:bg-slate-800/60 hover:border-cyan-500/30 transition-all cursor-default group">
-            <span className="material-symbols-outlined text-cyan-500 text-2xl group-hover:scale-110 transition-transform">{icon}</span>
-            <span className="font-bold text-slate-200 text-sm">{title}</span>
-            <span className="text-xs text-slate-400 leading-tight">{desc}</span>
+        <div
+            className="flex flex-col gap-1 p-2 md:p-3 rounded-lg bg-slate-900/40 border border-slate-800/50 hover:bg-slate-800/60 hover:border-cyan-500/30 transition-all cursor-default group"
+            style={{ animationDelay: delay }}
+        >
+            <span className="material-symbols-outlined text-cyan-500 text-xl md:text-2xl group-hover:scale-110 transition-transform">{icon}</span>
+            <span className="font-bold text-slate-200 text-xs md:text-sm whitespace-nowrap">{title}</span>
+            <span className="text-[10px] md:text-xs text-slate-400 leading-tight line-clamp-2">{desc}</span>
         </div>
     )
 }
 
 function FloatingBadge({ icon, text, position, delay }: { icon: string, text: string, position: string, delay: string }) {
     return (
-        <div className={`absolute ${position} flex items-center gap-2 bg-slate-900/90 border border-slate-700 px-3 py-2 rounded-lg shadow-xl backdrop-blur-md animate-bounce-slow`} style={{ animationDelay: delay }}>
+        <div className={`hidden lg:flex absolute ${position} items-center gap-2 bg-slate-900/90 border border-slate-700 px-3 py-1.5 rounded-lg shadow-xl backdrop-blur-md animate-bounce-slow z-20`} style={{ animationDelay: delay }}>
             <span className="material-symbols-outlined text-cyan-400 text-sm">{icon}</span>
-            <span className="text-xs font-bold text-white uppercase tracking-wider">{text}</span>
+            <span className="text-[10px] font-bold text-white uppercase tracking-wider whitespace-nowrap">{text}</span>
         </div>
     )
 }

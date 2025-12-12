@@ -102,7 +102,7 @@ function App() {
 
         {/* LEFT PANEL: SIDEBAR & NAVIGATION (Hidden in Fullscreen) */}
         {!isFullscreen && (
-          <div className="glass-panel w-full md:w-80 h-auto md:h-full flex flex-col relative z-20 border-r border-slate-700/50 shadow-2xl">
+          <div className="hidden md:flex glass-panel w-80 h-full flex-col relative z-20 border-r border-slate-700/50 shadow-2xl">
             {/* Header */}
             <div className="p-6 border-b border-slate-800 bg-slate-900/50">
               <div className="flex items-center gap-3 mb-2">
@@ -200,10 +200,36 @@ function App() {
           </div>
         )}
 
+        {/* MOBILE BOTTOM NAVIGATION */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-[500] bg-slate-950/90 border-t border-slate-800 backdrop-blur-md p-3 flex items-center justify-between print-hidden safe-area-bottom">
+          <button
+            onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+            disabled={currentStep === 0}
+            className="p-2 rounded-full bg-slate-800 text-white disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <span className="material-symbols-outlined">chevron_left</span>
+          </button>
+
+          <div className="flex flex-col items-center">
+            <span className="text-white text-xs font-bold truncate max-w-[150px]">{activeContent.title}</span>
+            <button onClick={toggleFullscreen} className="text-[10px] text-cyan-400 uppercase tracking-widest mt-1">
+              {lang === 'pt' ? 'APRESENTAÇÃO' : 'PRESENTATION'}
+            </button>
+          </div>
+
+          <button
+            onClick={() => setCurrentStep(Math.min(stepsData.length - 1, currentStep + 1))}
+            disabled={currentStep === stepsData.length - 1}
+            className="p-2 rounded-full bg-slate-800 text-white disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <span className="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
+
         {/* RIGHT PANEL: CONTENT VISUALIZATION */}
         <div className={`
               relative bg-slate-950 flex flex-col transition-all duration-300
-              ${isFullscreen ? 'w-full h-full max-w-[1600px] justify-center' : 'flex-1 h-full overflow-hidden'}
+              ${isFullscreen ? 'w-full h-full max-w-[1600px] justify-center' : 'w-full md:flex-1 h-full overflow-hidden'}
             `}>
           {/* Ambient Background */}
           <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
@@ -217,9 +243,9 @@ function App() {
 
           {/* Top Header - Hide in Fullscreen */}
           {!isFullscreen && (
-            <div className="relative z-10 p-6 flex justify-between items-start bg-gradient-to-b from-slate-900/80 to-transparent">
+            <div className="relative z-10 p-4 md:p-6 flex justify-between items-start bg-gradient-to-b from-slate-900/80 to-transparent">
               <div>
-                <h2 id="detail-title" className="text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight drop-shadow-lg">
+                <h2 id="detail-title" className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 tracking-tight drop-shadow-lg">
                   {lang === 'pt' ? 'Visão Geral' : 'Overview'}
                 </h2>
                 <div className="flex flex-wrap gap-2">
@@ -228,15 +254,15 @@ function App() {
                 </div>
               </div>
 
-
             </div>
           )}
 
           {/* Main Card Area */}
           <div className={`
-                relative z-10 p-4 md:p-8 overflow-y-auto scrollbar-hide flex flex-col items-center
+                relative z-10 p-4 md:p-8 overflow-y-auto scrollbar-hide flex flex-col items-center pb-24 md:pb-8
                 ${isFullscreen ? 'justify-center h-full' : 'flex-1'}
               `}>
+
 
             {/* Dynamic Card */}
             <div
