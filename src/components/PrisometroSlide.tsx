@@ -10,13 +10,16 @@ interface PrisometroData {
     lastUpdate: string;
 }
 
-export function PrisometroSlide() {
+interface Props {
+    lang?: 'pt' | 'en';
+}
+
+export function PrisometroSlide({ lang = 'pt' }: Props) {
     const [data, setData] = useState<PrisometroData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
-    // PROD TODO: Replace with your real backend endpoint
-    const API_URL = "https://api.seusistema.sp.gov.br/prisometro";
+    const t = (pt: string, en: string) => lang === 'pt' ? pt : en;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -65,7 +68,7 @@ export function PrisometroSlide() {
         fetchData();
     }, []);
 
-    if (error) return <div className="text-red-500 text-center">Erro ao carregar dados do Prisômetro.</div>;
+    if (error) return <div className="text-red-500 text-center">{t("Erro ao carregar dados do Prisômetro.", "Error loading Prisometer data.")}</div>;
 
     return (
         <div className="w-full h-full relative overflow-hidden flex flex-col items-center justify-center bg-slate-950 font-sans text-slate-200 p-8 select-none">
@@ -82,47 +85,51 @@ export function PrisometroSlide() {
             <div className="relative z-10 w-full max-w-6xl text-center flex flex-col items-center">
 
                 <h2 className="text-5xl md:text-6xl font-black text-white mb-2 mt-20 uppercase tracking-tighter drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]">
-                    Prisô<span className="text-cyan-500">metro</span>
+                    {lang === 'pt' ? (
+                        <>Prisô<span className="text-cyan-500">metro</span></>
+                    ) : (
+                        <>Priso<span className="text-cyan-500">meter</span></>
+                    )}
                 </h2>
 
                 <p className="text-xl md:text-2xl text-slate-400 font-light mb-16 max-w-3xl border-b border-slate-800 pb-8">
-                    As câmeras do Smart Sampa ajudaram na captura de
+                    {t("As câmeras do Smart Sampa ajudaram na captura de", "Smart Sampa cameras helped capture")}
                 </p>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-x-12 gap-y-16 w-full">
                     <StatItem
                         value={data?.foragidos}
-                        label={<span>FORAGIDOS<br />CAPTURADOS</span>}
+                        label={lang === 'pt' ? <span>FORAGIDOS<br />CAPTURADOS</span> : <span>FUGITIVES<br />CAPTURED</span>}
                         loading={loading}
                         delay={0}
                     />
                     <StatItem
                         value={data?.presosAno}
-                        label={<span>PRESOS NO<br />ANO DE 2025</span>}
+                        label={lang === 'pt' ? <span>PRESOS NO<br />ANO DE 2025</span> : <span>ARRESTED IN<br />YEAR 2025</span>}
                         loading={loading}
                         delay={100}
                     />
                     <StatItem
                         value={data?.presosMes}
-                        label={<span>PRESOS EM<br />DEZEMBRO/25</span>}
+                        label={lang === 'pt' ? <span>PRESOS EM<br />DEZEMBRO/25</span> : <span>ARRESTED IN<br />DECEMBER/25</span>}
                         loading={loading}
                         delay={200}
                     />
                     <StatItem
                         value={data?.desaparecidos}
-                        label={<span>DESAPARECIDOS<br />LOCALIZADOS</span>}
+                        label={lang === 'pt' ? <span>DESAPARECIDOS<br />LOCALIZADOS</span> : <span>MISSING<br />FOUND</span>}
                         loading={loading}
                         delay={300}
                     />
                     <StatItem
                         value={data?.flagrantes}
-                        label={<span>TOTAL DE PRESOS<br />EM FLAGRANTE</span>}
+                        label={lang === 'pt' ? <span>TOTAL DE PRESOS<br />EM FLAGRANTE</span> : <span>TOTAL FLAGRANT<br />ARRESTS</span>}
                         loading={loading}
                         delay={400}
                     />
                     <StatItem
                         value={data?.veiculos}
-                        label={<span>OCORRÊNCIA<br />COM VEÍCULOS</span>}
+                        label={lang === 'pt' ? <span>OCORRÊNCIA<br />COM VEÍCULOS</span> : <span>VEHICLE<br />INCIDENTS</span>}
                         loading={loading}
                         delay={500}
                     />
@@ -130,7 +137,7 @@ export function PrisometroSlide() {
 
                 <div className="mt-20 flex items-center gap-2 text-xs font-mono text-cyan-500/70 border border-cyan-900/50 bg-cyan-950/20 px-4 py-2 rounded-full">
                     <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span>
-                    ÚLTIMA ATUALIZAÇÃO: <span className="text-cyan-300">{loading ? '...' : data?.lastUpdate}</span>
+                    {t("ÚLTIMA ATUALIZAÇÃO:", "LAST UPDATE:")} <span className="text-cyan-300">{loading ? '...' : data?.lastUpdate}</span>
                 </div>
 
             </div>

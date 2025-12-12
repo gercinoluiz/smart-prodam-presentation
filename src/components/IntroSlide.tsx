@@ -1,13 +1,21 @@
 
 
-export function IntroSlide() {
+import camerasImg from '../assets/cameras.png';
+
+interface Props {
+    lang?: 'pt' | 'en';
+}
+
+export function IntroSlide({ lang = 'pt' }: Props) {
+    const t = (pt: string, en: string) => lang === 'pt' ? pt : en;
+
     return (
         <div className="w-full h-full relative overflow-hidden flex items-center justify-center bg-slate-950 font-sans select-none">
 
             {/* Background with Overlay */}
             <div className="absolute inset-0 z-0">
                 <img
-                    src="/assets/cameras.png"
+                    src={camerasImg}
                     alt="Smart City Background"
                     className="w-full h-full object-cover opacity-20 scale-105 animation-slow-pan"
                 />
@@ -28,7 +36,7 @@ export function IntroSlide() {
                 <div className="flex-1 space-y-8">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-xs font-mono mb-4 animate-fade-in-up">
                         <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                        MONITORAMENTO INTELIGENTE
+                        {t('MONITORAMENTO INTELIGENTE', 'INTELLIGENT MONITORING')}
                     </div>
 
                     <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight leading-tight animate-fade-in-up delay-100">
@@ -37,23 +45,25 @@ export function IntroSlide() {
                     </h1>
 
                     <p className="text-lg md:text-xl text-slate-300 leading-relaxed max-w-2xl border-l-4 border-cyan-500 pl-6 animate-fade-in-up delay-200">
-                        A maior plataforma de <strong>inteligência urbana</strong> e <strong>segurança pública</strong> da América Latina agora é PRODAM. <br />
-                        Integrando milhares de câmeras, sensores e dados para proteger sua cidade em tempo real.
+                        {lang === 'pt' ? (
+                            <>
+                                A maior plataforma de <strong>inteligência urbana</strong> e <strong>segurança pública</strong> da América Latina agora é PRODAM. <br />
+                                Integrando milhares de câmeras, sensores e dados para proteger sua cidade em tempo real.
+                            </>
+                        ) : (
+                            <>
+                                The largest <strong>urban intelligence</strong> and <strong>public safety</strong> platform in Latin America is now PRODAM. <br />
+                                Integrating thousands of cameras, sensors, and data to protect your city in real time.
+                            </>
+                        )}
                     </p>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 animate-fade-in-up delay-300">
-                        <FeatureItem icon="videocam" title="20k+ Câmeras" desc="Reconhecimento Facial & LPR" />
-                        <FeatureItem icon="hub" title="Integração" desc="PM, GCM, SAMU e Defesa Civil" />
-                        <FeatureItem icon="neurology" title="IA Avançada" desc="Detecção autônoma de incidentes" />
+                        <FeatureItem icon="videocam" title="20k+ Câmeras" desc={t("Reconhecimento Facial & LPR", "Facial Recognition & LPR")} key="1" />
+                        <FeatureItem icon="hub" title={t("Integração", "Integration")} desc={t("PM, GCM, SAMU e Defesa Civil", "Police, GCM, EMS and Civil Defense")} key="2" />
+                        <FeatureItem icon="neurology" title={t("IA Avançada", "Advanced AI")} desc={t("Detecção autônoma de incidentes", "Autonomous incident detection")} key="3" />
                     </div>
 
-                    {/* <div className="animate-fade-in-up delay-500">
-                        <div className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-2">Desenvolvido por</div>
-                        <div className="flex items-center gap-4 opacity-80 hover:opacity-100 transition-opacity">
-                            {/* Placeholder for Logos - styling text for now */}
-                            {/* <span className="text-2xl font-bold text-slate-200 tracking-tighter">PRODAM</span>
-                        </div>
-                    </div> */} 
                 </div>
 
                 {/* Visual Element / Graphic */}
@@ -71,7 +81,7 @@ export function IntroSlide() {
                         </div>
 
                         {/* Floating Badges */}
-                        <FloatingBadge icon="visibility" text="Vigilância" position="-top-4 left-10" delay="0s" />
+                        <FloatingBadge icon="visibility" text={t("Vigilância", "Surveillance")} position="-top-4 left-10" delay="0s" />
                         <FloatingBadge icon="memory" text="Analytics" position="bottom-12 -right-8" delay="1s" />
                         <FloatingBadge icon="speed" text="Real-Time" position="top-1/2 -left-12" delay="2s" />
                     </div>

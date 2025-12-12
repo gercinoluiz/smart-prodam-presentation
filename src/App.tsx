@@ -1,20 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { stepsData } from './data/stepsData';
 import { ArchitectureDiagram } from './components/ArchitectureDiagram';
 import { IntroSlide } from './components/IntroSlide';
 import { PrisometroSlide } from './components/PrisometroSlide';
+import { ThankYouSlide } from './components/ThankYouSlide';
+
 
 function App() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString('pt-BR'));
-
-  // Clock
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date().toLocaleTimeString('pt-BR'));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+  const [lang, setLang] = useState<'pt' | 'en'>('pt');
 
   const handlePrint = () => {
     window.print();
@@ -62,7 +56,7 @@ function App() {
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         setCurrentStep((prev) => Math.max(prev - 1, 0));
       } else if (e.key === 'f' || e.key === 'F11') {
-        // Optional: Toggle fullscreen on F key or F11 (browser handles F11 usually, but we can intercept if needed, mostly redundant for F11)
+        // Optional: Toggle fullscreen on F key
       }
     };
 
@@ -79,10 +73,27 @@ function App() {
     };
   }, []);
 
-  const activeStepData = stepsData[currentStep];
+  const activeStep = stepsData[currentStep];
+  const activeContent = activeStep[lang];
 
   return (
     <>
+      {/* Language Toggle */}
+      <div className="fixed top-6 right-6 z-[100] flex gap-2 print-hidden">
+        <button
+          onClick={() => setLang('pt')}
+          className={`px-3 py-1 rounded text-xs font-bold border transition-all ${lang === 'pt' ? 'bg-cyan-600 border-cyan-400 text-white' : 'bg-slate-900/80 border-slate-700 text-slate-500 hover:text-white'}`}
+        >
+          PT
+        </button>
+        <button
+          onClick={() => setLang('en')}
+          className={`px-3 py-1 rounded text-xs font-bold border transition-all ${lang === 'en' ? 'bg-cyan-600 border-cyan-400 text-white' : 'bg-slate-900/80 border-slate-700 text-slate-500 hover:text-white'}`}
+        >
+          EN
+        </button>
+      </div>
+
       {/* SCREEN INTERACTIVE VIEW */}
       <div className={`
         flex flex-col md:flex-row h-screen w-full bg-slate-950 overflow-hidden text-white font-inter print-hidden
@@ -100,7 +111,7 @@ function App() {
                 </div>
                 <h1 className="text-lg font-bold tracking-tight text-white">SMART SAMPA PRODAM</h1>
               </div>
-              <p className="text-xs text-slate-400">Fluxo de Monitoramento Inteligente</p>
+              <p className="text-xs text-slate-400">{lang === 'pt' ? 'Fluxo de Monitoramento Inteligente' : 'Intelligent Monitoring Flow'}</p>
             </div>
 
             {/* Steps List */}
@@ -113,26 +124,27 @@ function App() {
 
               {stepsData.map((step, index) => {
                 const isActive = index === currentStep;
+                const stepContent = step[lang];
                 return (
                   <div
                     key={step.id}
                     onClick={() => setCurrentStep(index)}
                     className={`group relative flex items-center gap-4 cursor-pointer p-2 rounded-lg transition-all mb-2 ${isActive ? 'bg-slate-800' : 'hover:bg-slate-800/50'}`}
-                    style={{ height: '64px' }} // Fixed height for alignment
+                    style={{ height: '64px' }}
                   >
                     {/* Icon Bubble */}
                     <div
                       className={`
-                      pseudo-bubble relative z-10 w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 shrink-0
-                      ${isActive
+                          pseudo-bubble relative z-10 w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 shrink-0
+                          ${isActive
                           ? 'w-16 rounded-md border-cyan-400 shadow-[0_0_15px_rgba(8,145,178,0.5)]'
-                          : 'bg-slate-900 border-slate-700 text-slate-500 opacity-70'} // Reduced size for inactive
-                      ${index === 0 && isActive ? 'bg-slate-800' : ''}
-                    `}
+                          : 'bg-slate-900 border-slate-700 text-slate-500 opacity-70'}
+                          ${index === 0 && isActive ? 'bg-slate-800' : ''}
+                        `}
                     >
                       {isActive ? (
                         <>
-                          <img src={step.image} alt={step.title} className="absolute inset-0 w-full h-full object-cover" />
+                          <img src={step.image} alt={stepContent.title} className="absolute inset-0 w-full h-full object-cover" />
                           <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                             <span className="material-symbols-outlined text-sm text-white drop-shadow-md">{step.icon}</span>
                           </div>
@@ -145,10 +157,10 @@ function App() {
                     {/* Text */}
                     <div className="flex-1 min-w-0">
                       <h4 className={`text-xs md:text-sm font-bold transition-colors truncate ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'}`}>
-                        {step.title}
+                        {stepContent.title}
                       </h4>
                       <p className="text-[9px] md:text-[10px] text-slate-500 uppercase tracking-wider truncate">
-                        {step.subtitle}
+                        {stepContent.subtitle}
                       </p>
                     </div>
 
@@ -167,29 +179,32 @@ function App() {
                 onClick={toggleFullscreen}
                 className="w-full py-2 px-4 rounded-lg bg-cyan-600 hover:bg-cyan-500 flex items-center justify-center gap-2 text-white text-xs font-semibold transition-all shadow-lg shadow-cyan-900/20"
               >
-                <span className="material-symbols-outlined text-sm">slideshow</span> Modo Apresentação
+                <span className="material-symbols-outlined text-sm">slideshow</span> {lang === 'pt' ? 'Modo Apresentação' : 'Presentation Mode'}
               </button>
               <button
                 onClick={handlePrint}
                 className="w-full py-2 px-4 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center gap-2 text-slate-300 text-xs font-semibold transition-all"
               >
-                <span className="material-symbols-outlined text-sm">picture_as_pdf</span> Baixar em PDF
+                <span className="material-symbols-outlined text-sm">picture_as_pdf</span> {lang === 'pt' ? 'Baixar em PDF' : 'Download PDF'}
               </button>
             </div>
 
             {/* Footer Attribution */}
             <div className="p-4 border-t border-slate-800 text-[10px] text-slate-600 text-center">
-              Arquitetura de referência: Smart Sampa.<br />
-              Imagens ilustrativas geradas por IA.
+              {lang === 'pt' ? (
+                <>Arquitetura de referência: Smart Sampa.<br />Imagens ilustrativas geradas por IA.</>
+              ) : (
+                <>Reference Architecture: Smart Sampa.<br />Illustrative images generated by AI.</>
+              )}
             </div>
           </div>
         )}
 
         {/* RIGHT PANEL: CONTENT VISUALIZATION */}
         <div className={`
-          relative bg-slate-950 flex flex-col transition-all duration-300
-          ${isFullscreen ? 'w-full h-full max-w-[1600px] justify-center' : 'flex-1 h-full overflow-hidden'}
-        `}>
+              relative bg-slate-950 flex flex-col transition-all duration-300
+              ${isFullscreen ? 'w-full h-full max-w-[1600px] justify-center' : 'flex-1 h-full overflow-hidden'}
+            `}>
           {/* Ambient Background */}
           <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
             <img
@@ -205,66 +220,65 @@ function App() {
             <div className="relative z-10 p-6 flex justify-between items-start bg-gradient-to-b from-slate-900/80 to-transparent">
               <div>
                 <h2 id="detail-title" className="text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight drop-shadow-lg">
-                  Visão Geral
+                  {lang === 'pt' ? 'Visão Geral' : 'Overview'}
                 </h2>
                 <div className="flex flex-wrap gap-2">
-                  <span className="px-2 py-1 bg-slate-800/80 rounded text-xs text-slate-300 border border-slate-700">Fluxo Completo</span>
-                  <span className="px-2 py-1 bg-slate-800/80 rounded text-xs text-slate-300 border border-slate-700">Tempo Real</span>
+                  <span className="px-2 py-1 bg-slate-800/80 rounded text-xs text-slate-300 border border-slate-700">{lang === 'pt' ? 'Fluxo Completo' : 'Full Workflow'}</span>
+                  <span className="px-2 py-1 bg-slate-800/80 rounded text-xs text-slate-300 border border-slate-700">{lang === 'pt' ? 'Tempo Real' : 'Real-time'}</span>
                 </div>
               </div>
 
-              {/* Clock */}
-              <div className="text-right hidden md:block">
-                <div className="text-2xl font-mono text-cyan-400 font-bold drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">
-                  {currentTime}
-                </div>
-                <div className="text-[10px] text-slate-500 uppercase tracking-widest">Hora Local</div>
-              </div>
+
             </div>
           )}
 
           {/* Main Card Area */}
           <div className={`
-            relative z-10 p-4 md:p-8 overflow-y-auto scrollbar-hide flex flex-col items-center
-            ${isFullscreen ? 'justify-center h-full' : 'flex-1'}
-          `}>
+                relative z-10 p-4 md:p-8 overflow-y-auto scrollbar-hide flex flex-col items-center
+                ${isFullscreen ? 'justify-center h-full' : 'flex-1'}
+              `}>
 
             {/* Dynamic Card */}
             <div
               id="content-card"
               className={`
-              w-full max-w-7xl glass-panel rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 flex flex-col md:flex-row 
-              print:opacity-100 print:transform-none print:shadow-none print:border-none print:block
-              ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}
-              ${isChangingStep ? 'opacity-50 scale-[0.99]' : ''}
-            `}
+                  w-full max-w-7xl glass-panel rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 flex flex-col md:flex-row 
+                  print:opacity-100 print:transform-none print:shadow-none print:border-none print:block
+                  ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}
+                  ${isChangingStep ? 'opacity-50 scale-[0.99]' : ''}
+                `}
             >
-              {activeStepData.layout === 'intro' ? (
+              {activeStep.layout === 'intro' ? (
                 // INTRO LAYOUT
                 <div className="w-full h-[70vh] md:h-[600px] bg-slate-900 overflow-hidden relative print:h-[90vh]">
-                  <IntroSlide />
+                  <IntroSlide lang={lang} />
                 </div>
-              ) : activeStepData.layout === 'prisometro' ? (
+              ) : activeStep.layout === 'prisometro' ? (
                 // PRISOMETRO LAYOUT
                 <div className="w-full h-[70vh] md:h-[600px] bg-white overflow-hidden relative print:h-[90vh]">
-                  <PrisometroSlide />
+                  <PrisometroSlide lang={lang} />
                 </div>
-              ) : activeStepData.layout === 'full' ? (
+              ) : activeStep.layout === 'thankyou' ? (
+                // THANK YOU LAYOUT
+                <div className="w-full h-[70vh] md:h-[600px] bg-slate-950 overflow-hidden relative print:h-[90vh]">
+                  <ThankYouSlide lang={lang} />
+                </div>
+              ) : activeStep.layout === 'full' ? (
                 // FULL WIDTH LAYOUT (DIAGRAM)
                 <div className="w-full h-[70vh] md:h-[600px] bg-slate-900 overflow-hidden relative print:h-[90vh]">
-                  <ArchitectureDiagram />
+                  <ArchitectureDiagram lang={lang} />
                   {/* Subtle Gradient for integration */}
                   <div className="absolute inset-0 pointer-events-none border-4 border-slate-800/20 rounded-2xl"></div>
                 </div>
               ) : (
                 // STANDARD LAYOUT (SPLIT)
                 <>
-                  {/* Card Image Section - Increased width share */}
+                  {/* Card Image Section */}
                   <div className="relative w-full md:w-3/5 h-64 md:h-auto overflow-hidden group print:w-full print:h-96 print:mb-4">
                     <div className="scan-line z-20 print:hidden"></div>
 
                     <img
-                      src={activeStepData.image}
+                      src={activeStep.image}
                       alt="Detail View"
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
@@ -278,17 +292,17 @@ function App() {
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.1)] print:border-gray-300 print:shadow-none">
                         <span className="material-symbols-outlined text-cyan-400 text-2xl print:text-black">
-                          {activeStepData.icon}
+                          {activeStep.icon}
                         </span>
                       </div>
                       <h3 className="text-xl font-bold text-white tracking-wide print:text-black">
-                        {activeStepData.title}
+                        {activeContent.title}
                       </h3>
                     </div>
 
                     <div
                       className="prose prose-invert max-w-none text-slate-300 text-sm leading-relaxed print:prose-neutral print:text-black"
-                      dangerouslySetInnerHTML={{ __html: activeStepData.content }}
+                      dangerouslySetInnerHTML={{ __html: activeContent.content }}
                     />
                   </div>
                 </>
@@ -303,53 +317,72 @@ function App() {
 
       {/* PRINT VIEW: FULL DECK RENDER */}
       <div className="hidden print-visible w-screen text-white font-inter">
-        {stepsData.map((step, index) => (
-          <div key={step.id} className="w-screen h-screen relative flex items-center justify-center bg-slate-950 break-after-page overflow-hidden">
-            {/* Background for Print */}
-            <div className="absolute inset-0 opacity-20">
-              <img src="/assets/cameras.png" className="w-full h-full object-cover blur-sm" alt="bg" />
-            </div>
-
-            {/* Header Branding */}
-            <div className="absolute top-8 left-12 right-12 flex justify-between items-end border-b border-slate-700 pb-4">
-              <h1 className="text-2xl font-bold text-white">Smart Monitor <span className="text-cyan-500">//</span> {step.title}</h1>
-              <p className="text-xs text-slate-400">Fluxo de Monitoramento Inteligente</p>
-            </div>
-
-            {/* The Card Copy */}
-            <div className="w-[90%] max-w-7xl glass-panel rounded-2xl overflow-hidden shadow-none flex flex-row relative z-10 border border-slate-600">
-              {/* Image */}
-              <div className="relative w-3/5 h-[60vh] overflow-hidden">
-                {index === 0 ? (
-                  <div className="w-full h-full bg-slate-900">
-                    <ArchitectureDiagram />
-                  </div>
-                ) : (
-                  <img src={step.image} className="w-full h-full object-cover" alt={step.title} />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60"></div>
-              </div>
-              {/* Content */}
-              <div className="w-2/5 p-12 bg-slate-900 flex flex-col justify-center">
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-16 h-16 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-500/30">
-                    <span className="material-symbols-outlined text-cyan-400 text-3xl">{step.icon}</span>
-                  </div>
-                  <div>
-                    <h3 className="text-3xl font-bold text-white mb-1">{step.title}</h3>
-                    <p className="text-sm text-slate-400 uppercase tracking-wider">{step.subtitle}</p>
-                  </div>
+        {
+          stepsData.map((step, index) => {
+            const content = step[lang];
+            return (
+              <div key={step.id} className="w-screen h-screen relative flex items-center justify-center bg-slate-950 break-after-page overflow-hidden">
+                {/* Background for Print */}
+                <div className="absolute inset-0 opacity-20">
+                  <img src="/assets/cameras.png" className="w-full h-full object-cover blur-sm" alt="bg" />
                 </div>
-                <div className="prose prose-invert max-w-none text-slate-300 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: step.content }} />
-              </div>
-            </div>
 
-            {/* Pagination Footer */}
-            <div className="absolute bottom-6 text-center text-[10px] text-slate-500 w-full">
-              Arquitetura de Referência Smart Sampa | Página {step.id} de {stepsData.length}
-            </div>
-          </div>
-        ))}
+                {/* Header Branding */}
+                <div className="absolute top-8 left-12 right-12 flex justify-between items-end border-b border-slate-700 pb-4 z-20">
+                  <h1 className="text-2xl font-bold text-white">Smart Monitor <span className="text-cyan-500">//</span> {content.title}</h1>
+                  <p className="text-xs text-slate-400">{lang === 'pt' ? 'Fluxo de Monitoramento Inteligente' : 'Intelligent Monitoring Flow'}</p>
+                </div>
+
+                {/* Content Logic matching Main View */}
+                <div className="w-full h-full flex items-center justify-center relative z-10 pt-20 pb-16 px-12">
+                  {step.layout === 'intro' ? (
+                    <div className="w-full h-full bg-slate-900 overflow-hidden relative rounded-xl border border-slate-800">
+                      <IntroSlide lang={lang} />
+                    </div>
+                  ) : step.layout === 'prisometro' ? (
+                    <div className="w-full h-full bg-white overflow-hidden relative rounded-xl border border-slate-200">
+                      <PrisometroSlide lang={lang} />
+                    </div>
+                  ) : step.layout === 'thankyou' ? (
+                    <div className="w-full h-full bg-slate-950 overflow-hidden relative rounded-xl border border-slate-800">
+                      <ThankYouSlide lang={lang} />
+                    </div>
+                  ) : step.layout === 'full' ? (
+                    <div className="w-full h-full bg-slate-900 overflow-hidden relative rounded-xl border border-slate-800">
+                      <ArchitectureDiagram lang={lang} />
+                    </div>
+                  ) : (
+                    <div className="w-full max-w-7xl glass-panel rounded-2xl overflow-hidden shadow-none flex flex-row border border-slate-600 h-[60vh]">
+                      {/* Image */}
+                      <div className="relative w-3/5 h-full overflow-hidden">
+                        <img src={step.image} className="w-full h-full object-cover" alt={content.title} />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60"></div>
+                      </div>
+                      {/* Content */}
+                      <div className="w-2/5 p-12 bg-slate-900 flex flex-col justify-center">
+                        <div className="flex items-center gap-4 mb-8">
+                          <div className="w-16 h-16 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-500/30">
+                            <span className="material-symbols-outlined text-cyan-400 text-3xl">{step.icon}</span>
+                          </div>
+                          <div>
+                            <h3 className="text-3xl font-bold text-white mb-1">{content.title}</h3>
+                            <p className="text-sm text-slate-400 uppercase tracking-wider">{content.subtitle}</p>
+                          </div>
+                        </div>
+                        <div className="prose prose-invert max-w-none text-slate-300 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: content.content }} />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Pagination Footer */}
+                <div className="absolute bottom-6 text-center text-[10px] text-slate-500 w-full z-20">
+                  {lang === 'pt' ? 'Arquitetura de Referência Smart Sampa' : 'Smart Sampa Reference Architecture'} | {lang === 'pt' ? 'Página' : 'Page'} {index + 1} {lang === 'pt' ? 'de' : 'of'} {stepsData.length}
+                </div>
+              </div>
+            );
+          })
+        }
       </div>
     </>
   );
